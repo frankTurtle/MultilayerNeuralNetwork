@@ -7,25 +7,35 @@ import java.util.HashMap;
 public class App {
     private final static String FORWARD = "forward"; //....................... final value for forward key in map
     private final static String BACKWARD = "backward"; //..................... final value for backward key in map
+    private final static double ALPHA = 0.1; //............................... final value for the learning
+    private final static String X1 = "IDX1"; //............................... final value for the first input
+    private final static String X2 = "IDX2"; //............................... final value for the second input
+    private final static String OUTPUT = "ID9"; //............................ final value for the output node
     private final static String[] NEURON_NAMES = { "ID3","ID4", "ID5",
                                                    "ID6","ID7", "ID8",
-                                                   "ID9","IDX1", "IDX2" }; //. final array full of neuron names
+                                                   OUTPUT,X1,X2 }; //......... final array full of neuron names
+
 
     public static void main( String[] args ){
-        double x1 = 0;
-        double x2 = 0;
         HashMap< String, Neuron > neuronHashMap = new HashMap<>();
+        HashMap< String, Double > neuronDeltaMap = new HashMap<>();
+        double error = 0.0;
 
         setupNeuronConnections( neuronHashMap );
-//        System.out.println( neuronHashMap.get(NEURON_NAMES[0]).getConnectedNodesDirection(BACKWARD) );
+        computeSigmoid( neuronHashMap, FORWARD );
+        error = 0 - neuronHashMap.get( OUTPUT ).getSigmoid();
 
-        for( String key : NEURON_NAMES ){ System.out.println( neuronHashMap.get(key).getWeightDirection(FORWARD) ); }
+//        neuronHashMap.get(NEURON_NAMES[0]).calculateSigmoid(FORWARD);
+//        System.out.println( neuronHashMap.get(NEURON_NAMES[0]).getSigmoid() );
     }
 
     // Helper method to setup all the connections between nodes
     private static void setupNeuronConnections( HashMap< String, Neuron > neuronHashMap ){
         for( String name : NEURON_NAMES ){ //................................................ loop through each Neuron
             Neuron addMe = new Neuron( name ); //............................................ create a new one with the name
+            if( name.equals(X1) || name.equals(X2)){ //............ if its the X inputs, set sigmoids to 1
+                addMe.setSigmoid(1.0);
+            }
             neuronHashMap.put( name, addMe ); //............................................. add it into HashMap
         }
 
@@ -94,6 +104,15 @@ public class App {
                     break;
 
             }
+        }
+    }
+
+    // Helper method to compute all sigmoid functions
+    private static void computeSigmoid( HashMap< String, Neuron > neuronHashMap, String direction ){
+        for( String key : NEURON_NAMES ){ //........................................................... loop through each neuron name
+            if( key.equals(X1) || key.equals(X2)){ continue; } //...................................... if its the input nodes ignore
+            neuronHashMap.get(key).calculateSigmoid(direction); //..................................... calculate sigmoid
+//            System.out.println(  String.format( "%s %nSig:%f%n",neuronHashMap.get(key),neuronHashMap.get(key).getSigmoid()) );
         }
     }
 }

@@ -114,6 +114,21 @@ public class Neuron implements Cloneable {
         return min + ( max - min ) * randomGenerator.nextDouble();
     }
 
+    // Method to calculate the sigmoid value for this particular Neuron
+    // requires which direction you're currently 'travelling'
+    public void calculateSigmoid( String direction ){
+        double value = 0.0; //................................................................... value to use for the tally
+        String oppositeDirection = ( direction.equals(FORWARD) ) ? BACKWARD : FORWARD; //........ a string with value opposite of travel
+
+        for( Neuron neuron : getConnectedNodesDirection(oppositeDirection) ){ //................. loop through each neuron that connects to this one
+//            System.out.println( String.format("Sig: %f%nWeight: %f%nThresh: %f%n", neuron.getSigmoid(), neuron.getWeightDirection(oppositeDirection), getThreshold()) );
+            value += ( neuron.getSigmoid() * neuron.getWeightDirection(oppositeDirection) ); //.. multiply that neurons sigmoid by its weight cost
+        }
+
+        value -= 1 * getThreshold(); //.......................................................... subtract threshold
+        setSigmoid( 1 / (1 + Math.pow( Math.E, -(value))) ); //.................................. set sigmoid value based on values obtained
+    }
+
     // Overridden method used to implement cloning objects
     public Neuron clone(){
         try{ return (Neuron) super.clone(); }
