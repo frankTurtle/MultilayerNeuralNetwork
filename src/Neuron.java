@@ -20,11 +20,11 @@ public class Neuron implements Cloneable {
     // Constructor with parameters
     // requires all new Neurons to have a name and threshold value
     public Neuron( String name ){
-        this.setSigmoid( 0.0 ); //................... initialize all instance variables
-        this.setThreshold( 0.0 );
+        this.setSigmoid( 0.0 ); //......... initialize all variables
         forwardNodes = new ArrayList<>();
         backwardNodes = new ArrayList<>();
         weightDirection = new HashMap<>();
+        this.setupWeightsAndThresholds();
         this.name = name;
     }
 
@@ -86,7 +86,7 @@ public class Neuron implements Cloneable {
     }
 
     public double getWeightDirection( String direction ) {
-        return weightDirection.get( direction.toUpperCase() );
+        return weightDirection.get( direction );
     }
 
     public String getName() {

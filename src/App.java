@@ -17,9 +17,11 @@ public class App {
 
         test1.setAConnectedNodeDirection( "forward", test2 );
         test1.setAConnectedNodeDirection( "forward", test3 );
-        System.out.println( test1.getConnectedNodesDirection("forward") );
+//        System.out.println( test1.getConnectedNodesDirection("forward") );
         Neuron text4 = new Neuron( test1 );
-        System.out.println( text4.getConnectedNodesDirection("forward") );
+//        System.out.println( text4.getConnectedNodesDirection("forward") );
+        System.out.println( text4.getWeightDirection("backward") );
+        System.out.println( test1.getWeightDirection("backward") );
 //        test1.setAConnectedWeightDirection( "FORWARD", 2.0 );
 //        System.out.println( test1.getWeightDirection( "FORWARD" ) );
     }
