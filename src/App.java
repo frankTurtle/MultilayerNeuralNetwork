@@ -1,11 +1,12 @@
 /**
  * Created by Barret J. Nobel on 4/26/2016.
  */
+
 public class App {
     public static void main( String[] args ){
-        Neuron test1 = new Neuron("test1", 3.3858 );
-        Neuron test2 = new Neuron( "test2", 1.0 );
-        Neuron test3 = new Neuron( "test3", 1.8 );
+        Neuron test1 = new Neuron( "test1" );
+        Neuron test2 = new Neuron( "test2" );
+        Neuron test3 = new Neuron( "test3" );
 
         double x1 = 0;
         double x2 = 0;

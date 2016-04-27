@@ -4,6 +4,7 @@
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class Neuron implements Cloneable {
     private double sigmoid; //................................ instance variable to hold sigmoid value
@@ -18,9 +19,9 @@ public class Neuron implements Cloneable {
 
     // Constructor with parameters
     // requires all new Neurons to have a name and threshold value
-    public Neuron( String name, double threshold ){
+    public Neuron( String name ){
         this.setSigmoid( 0.0 ); //................... initialize all instance variables
-        this.setThreshold( threshold );
+        this.setThreshold( 0.0 );
         forwardNodes = new ArrayList<>();
         backwardNodes = new ArrayList<>();
         weightDirection = new HashMap<>();
@@ -90,6 +91,21 @@ public class Neuron implements Cloneable {
 
     public String getName() {
         return name;
+    }
+
+    // Method to initialize all weights and thresholds
+    public void setupWeightsAndThresholds(){
+        this.setThreshold( randomNumber() );
+        weightDirection.put( FORWARD, randomNumber() );
+        weightDirection.put( BACKWARD, randomNumber() );
+    }
+
+    // Helper method to generate a random double
+    // range is (-2.4 / 2) - (2.4/2)
+    private double randomNumber(){
+        Random randomGenerator = new Random();
+        double max = 2.4/2, min = -max;
+        return min + ( max - min ) * randomGenerator.nextDouble();
     }
 
     // Overridden method used to implement cloning objects
