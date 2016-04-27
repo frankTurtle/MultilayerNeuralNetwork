@@ -18,12 +18,13 @@ public class App {
 
     public static void main( String[] args ){
         HashMap< String, Neuron > neuronHashMap = new HashMap<>();
-        HashMap< String, Double > neuronDeltaMap = new HashMap<>();
+        HashMap< String, Double > deltaHashMap = new HashMap<>();
         double error = 0.0;
 
         setupNeuronConnections( neuronHashMap );
         computeSigmoid( neuronHashMap, FORWARD );
         error = 0 - neuronHashMap.get( OUTPUT ).getSigmoid();
+        deltaHashMap.put( OUTPUT, computeDeltaForOutput(neuronHashMap.get(OUTPUT), error) );
 
 //        neuronHashMap.get(NEURON_NAMES[0]).calculateSigmoid(FORWARD);
 //        System.out.println( neuronHashMap.get(NEURON_NAMES[0]).getSigmoid() );
@@ -114,5 +115,22 @@ public class App {
             neuronHashMap.get(key).calculateSigmoid(direction); //..................................... calculate sigmoid
 //            System.out.println(  String.format( "%s %nSig:%f%n",neuronHashMap.get(key),neuronHashMap.get(key).getSigmoid()) );
         }
+    }
+
+    // Helper method to compute all delta values
+    private static void computeDelta( HashMap< String, Double > deltaHashMap, HashMap< String, Neuron > neuronHashMap, String direction ){
+        for( String key : NEURON_NAMES ){
+            Neuron neuron = neuronHashMap.get( key );
+            double sigmoid = neuron.getSigmoid();
+            double value = 0.0;
+
+//            value = sigmoid * ( 1 - sigmoid ) * (  )
+        }
+    }
+
+    // Helper method to compute the delta value for the output
+    private static double computeDeltaForOutput( Neuron output, double error ){
+        double sigmoid = output.getSigmoid();
+        return sigmoid * ( 1 - sigmoid ) * error;
     }
 }
