@@ -92,7 +92,7 @@ public class Neuron implements Cloneable {
         return name;
     }
 
-    // Overridden method used to implementat cloning objects
+    // Overridden method used to implement cloning objects
     public Neuron clone(){
         try{ return (Neuron) super.clone(); }
         catch( CloneNotSupportedException e ){
