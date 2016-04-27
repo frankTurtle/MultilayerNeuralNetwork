@@ -13,8 +13,8 @@ public class App {
 
         test1.setAConnectedNodeDirection( "forward", test2 );
         test1.setAConnectedNodeDirection( "forward", test3 );
-        System.out.println( Arrays.toString(test1.getConnectedNodesDirection("forward")) );
-//        test1.setAWeightDirection( "FORWARD", 2.0 );
+        System.out.println( test1.getConnectedNodesDirection("forward") );
+//        test1.setAConnectedWeightDirection( "FORWARD", 2.0 );
 //        System.out.println( test1.getWeightDirection( "FORWARD" ) );
     }
 }
