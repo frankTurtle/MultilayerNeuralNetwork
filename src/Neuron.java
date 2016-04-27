@@ -64,9 +64,13 @@ public class Neuron implements Cloneable {
 
     public void setAConnectedWeightDirection( String direction, double value ){ weightDirection.put(direction, value); }
 
-    public void setAConnectedNodeDirection( String direction, Neuron node ){
-        if( direction.toUpperCase().equals(FORWARD) ){ forwardNodes.add(node); }
-        else{ backwardNodes.add(node); }
+    public void setAConnectedNodeDirection( String direction, Neuron ... nodeList ){
+        if( direction.equals(FORWARD) ) {
+            for (Neuron addMe : nodeList) { forwardNodes.add(addMe.clone()); }
+        }
+        else{
+            for (Neuron addMe : nodeList) { backwardNodes.add(addMe.clone()); }
+        }
     }
 
     //...................................... GETTERS
@@ -80,7 +84,7 @@ public class Neuron implements Cloneable {
     }
 
     public ArrayList< Neuron > getConnectedNodesDirection( String direction ) {
-        return ( direction.toUpperCase().equals(FORWARD) ) ? forwardNodes : backwardNodes;
+        return ( direction.equals(FORWARD) ) ? forwardNodes : backwardNodes;
     }
 
     public HashMap<String, Double> getWeightDirection() {
