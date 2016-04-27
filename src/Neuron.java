@@ -53,6 +53,7 @@ public class Neuron implements Cloneable {
     }
 
     //...................................... SETTERS
+
     public void setSigmoid(double sigmoid) {
         this.sigmoid = sigmoid;
     }
@@ -69,6 +70,7 @@ public class Neuron implements Cloneable {
     }
 
     //...................................... GETTERS
+
     public double getSigmoid() {
         return sigmoid;
     }

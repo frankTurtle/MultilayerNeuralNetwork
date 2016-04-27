@@ -11,18 +11,21 @@ public class App {
         double x1 = 0;
         double x2 = 0;
 
+        final String FORWARD = "forward"; //....... final value for key in map
+        final String BACKWARD = "backward"; //..... final value for key in map
+
         final String[] NEURON_NAMES = { "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE" };
 
 
 
-        test1.setAConnectedNodeDirection( "forward", test2 );
-        test1.setAConnectedNodeDirection( "forward", test3 );
-//        System.out.println( test1.getConnectedNodesDirection("forward") );
+        test1.setAConnectedNodeDirection( FORWARD, test2 );
+        test1.setAConnectedNodeDirection( FORWARD, test3 );
+//        System.out.println( test1.getConnectedNodesDirection(FORWARD) );
         Neuron text4 = new Neuron( test1 );
-//        System.out.println( text4.getConnectedNodesDirection("forward") );
-        System.out.println( text4.getWeightDirection("backward") );
-        System.out.println( test1.getWeightDirection("backward") );
-//        test1.setAConnectedWeightDirection( "FORWARD", 2.0 );
-//        System.out.println( test1.getWeightDirection( "FORWARD" ) );
+//        System.out.println( text4.getConnectedNodesDirection(FORWARD) );
+        System.out.println( text4.getWeightDirection(BACKWARD) );
+        System.out.println( test1.getWeightDirection(BACKWARD) );
+//        test1.setAConnectedWeightDirection( FORWARD, 2.0 );
+//        System.out.println( test1.getWeightDirection( FORWARD ) );
     }
 }
