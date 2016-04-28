@@ -3,6 +3,7 @@
  */
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class App {
     private final static String FORWARD = "forward"; //....................... final value for forward key in map
@@ -25,8 +26,8 @@ public class App {
         error = 0 - neuronHashMap.get( OUTPUT ).getSigmoid();
         deltaHashMap.put( OUTPUT, computeDeltaForOutput(neuronHashMap.get(OUTPUT), error) );
         computeDelta( deltaHashMap, neuronHashMap );
+        computeAndUpdateWeightCorrection( neuronHashMap, deltaHashMap );
 
-        System.out.println( deltaHashMap );
 
     }
 
@@ -56,8 +57,8 @@ public class App {
                     neuron3.setAConnectedNodeDirection( FORWARD, neuron5, neuron6 ); //.................. setup connecting nodes
                     neuron3.setAConnectedNodeDirection( BACKWARD, neuronX1, neuronX2 );
 
-                    neuron3.setAConnectedWeightDirection( neuron5.getName(), Neuron.randomNumber() ); //. setup the connecting weights
-                    neuron3.setAConnectedWeightDirection( neuron6.getName(), Neuron.randomNumber() );
+                    neuron3.setAConnectedWeightNamed( neuron5.getName(), Neuron.randomNumber() ); //. setup the connecting weights
+                    neuron3.setAConnectedWeightNamed( neuron6.getName(), Neuron.randomNumber() );
 
                     neuron5.setAConnectedNodeDirection( BACKWARD, neuron3 ); //.......................... nodes its connected too also point to this one
                     neuron6.setAConnectedNodeDirection( BACKWARD, neuron3 );
@@ -67,8 +68,8 @@ public class App {
                     neuron4.setAConnectedNodeDirection( FORWARD, neuron5, neuron6 );
                     neuron4.setAConnectedNodeDirection( BACKWARD, neuronX1, neuronX2 );
 
-                    neuron4.setAConnectedWeightDirection( neuron5.getName(), Neuron.randomNumber() );
-                    neuron4.setAConnectedWeightDirection( neuron6.getName(), Neuron.randomNumber() );
+                    neuron4.setAConnectedWeightNamed( neuron5.getName(), Neuron.randomNumber() );
+                    neuron4.setAConnectedWeightNamed( neuron6.getName(), Neuron.randomNumber() );
 
                     neuron5.setAConnectedNodeDirection( BACKWARD, neuron4 );
                     neuron6.setAConnectedNodeDirection( BACKWARD, neuron4 );
@@ -77,8 +78,8 @@ public class App {
                 case 2: //............................................................................... Neuron 5
                     neuron5.setAConnectedNodeDirection( FORWARD, neuron7, neuron8 );
 
-                    neuron5.setAConnectedWeightDirection( neuron7.getName(), Neuron.randomNumber() );
-                    neuron5.setAConnectedWeightDirection( neuron8.getName(), Neuron.randomNumber() );
+                    neuron5.setAConnectedWeightNamed( neuron7.getName(), Neuron.randomNumber() );
+                    neuron5.setAConnectedWeightNamed( neuron8.getName(), Neuron.randomNumber() );
 
                     neuron7.setAConnectedNodeDirection( BACKWARD, neuron5 );
                     neuron8.setAConnectedNodeDirection( BACKWARD, neuron5 );
@@ -87,8 +88,8 @@ public class App {
                 case 3: //............................................................................... Neuron 6
                     neuron6.setAConnectedNodeDirection( FORWARD, neuron7, neuron8 );
 
-                    neuron6.setAConnectedWeightDirection( neuron7.getName(), Neuron.randomNumber() );
-                    neuron6.setAConnectedWeightDirection( neuron8.getName(), Neuron.randomNumber() );
+                    neuron6.setAConnectedWeightNamed( neuron7.getName(), Neuron.randomNumber() );
+                    neuron6.setAConnectedWeightNamed( neuron8.getName(), Neuron.randomNumber() );
 
                     neuron7.setAConnectedNodeDirection( BACKWARD, neuron6 );
                     neuron8.setAConnectedNodeDirection( BACKWARD, neuron6 );
@@ -97,7 +98,7 @@ public class App {
                 case 4: //.............................................................................. Neuron 7
                     neuron7.setAConnectedNodeDirection( FORWARD, neuron9 );
 
-                    neuron7.setAConnectedWeightDirection( neuron9.getName(), Neuron.randomNumber() );
+                    neuron7.setAConnectedWeightNamed( neuron9.getName(), Neuron.randomNumber() );
 
                     neuron9.setAConnectedNodeDirection( BACKWARD, neuron7 );
                     break;
@@ -105,7 +106,7 @@ public class App {
                 case 5: //.............................................................................. Neuron 8
                     neuron8.setAConnectedNodeDirection( FORWARD, neuron9 );
 
-                    neuron8.setAConnectedWeightDirection( neuron9.getName(), Neuron.randomNumber() );
+                    neuron8.setAConnectedWeightNamed( neuron9.getName(), Neuron.randomNumber() );
 
                     neuron9.setAConnectedNodeDirection( BACKWARD, neuron8 );
                     break;
@@ -113,15 +114,15 @@ public class App {
                 case 7: //.............................................................................. X1
                     neuronX1.setAConnectedNodeDirection( FORWARD, neuron3, neuron4 );
 
-                    neuronX1.setAConnectedWeightDirection( neuron3.getName(), Neuron.randomNumber() );
-                    neuronX1.setAConnectedWeightDirection( neuron4.getName(), Neuron.randomNumber() );
+                    neuronX1.setAConnectedWeightNamed( neuron3.getName(), Neuron.randomNumber() );
+                    neuronX1.setAConnectedWeightNamed( neuron4.getName(), Neuron.randomNumber() );
                     break;
 
                 case 8: //.............................................................................. X2
                     neuronX2.setAConnectedNodeDirection( FORWARD, neuron3, neuron4 );
 
-                    neuronX2.setAConnectedWeightDirection( neuron3.getName(), Neuron.randomNumber() );
-                    neuronX2.setAConnectedWeightDirection( neuron4.getName(), Neuron.randomNumber() );
+                    neuronX2.setAConnectedWeightNamed( neuron3.getName(), Neuron.randomNumber() );
+                    neuronX2.setAConnectedWeightNamed( neuron4.getName(), Neuron.randomNumber() );
                     break;
 
             }
@@ -164,5 +165,20 @@ public class App {
     private static double computeDeltaForOutput( Neuron output, double error ){
         double sigmoid = output.getSigmoid();
         return sigmoid * ( 1 - sigmoid ) * error;
+    }
+
+    // Helper method to computer and update all the weights in the network!
+    private static void computeAndUpdateWeightCorrection( HashMap< String, Neuron > neuronHashMap,
+                                                            HashMap< String, Double > deltaHashMap ){
+        for( Map.Entry<String, Neuron> neuron : neuronHashMap.entrySet() ){ //.......................... loop through each neuron
+            for( String name : neuron.getValue().getWeightForNeuronNamed().keySet() ){ //............... loop through the neurons they've a weight associated with
+                double yValue = neuron.getValue().getSigmoid(); //...................................... get all values needed for calculation
+                double delta = deltaHashMap.get( name );
+                double currentWeight = neuron.getValue().getWeightForNeuronNamed( name );
+                double change = ALPHA * yValue * delta;
+
+                neuron.getValue().setAConnectedWeightNamed( name, (currentWeight + change) ); //........ overwrite value in the hash with updated one
+            }
+        }
     }
 }

@@ -64,7 +64,7 @@ public class Neuron implements Cloneable {
         this.threshold = threshold;
     }
 
-    public void setAConnectedWeightDirection( String direction, double value ){ weightForNeuronNamed.put(direction, value); }
+    public void setAConnectedWeightNamed(String name, double value ){ weightForNeuronNamed.put(name, value); }
 
     public void setAConnectedNodeDirection( String direction, Neuron ... nodeList ){
         if( direction.equals(FORWARD) ) {
