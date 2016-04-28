@@ -122,12 +122,13 @@ public class Neuron implements Cloneable {
 
         for( Neuron neuron : getConnectedNodesDirection(oppositeDirection) ){ //..................... loop through each neuron that connects to this one
             if( neuron.name.equals(X1) || neuron.name.equals(X2)) continue; //....................... if its the input nodes ignore them
+            double weight;
             try{
-                double weight = neuron.getWeightForNeuronNamed( neuron.getName() ); //............... if you try to get weight from a node not in the hash
+                weight = neuron.getWeightForNeuronNamed( neuron.getName() ); //...................... if you try to get weight from a node not in the hash
             }
             catch( NullPointerException e ){ continue; } //.......................................... it'll just ignore it
 
-            value += ( neuron.getSigmoid() * neuron.getWeightForNeuronNamed(neuron.getName()) ); //.. multiply that neurons sigmoid by its weight cost
+            value += ( neuron.getSigmoid() * weight ); //............................................ multiply that neurons sigmoid by its weight cost
         }
 
         value -= 1 * getThreshold(); //.............................................................. subtract threshold
