@@ -7,15 +7,17 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class Neuron implements Cloneable {
-    private double sigmoid; //................................ instance variable to hold sigmoid value
-    private double threshold; //.............................. instance variable to hold the threshold value
-    private ArrayList< Neuron > forwardNodes; //.............. list of all nodes connected forward
-    private ArrayList< Neuron > backwardNodes; //............. list of all nodes connected backwards
-    private HashMap< String, Double > weightDirection; //..... map to give the weight in forward / backward direction
-    private String name; //................................... Neuron name
+    private double sigmoid; //................................. instance variable to hold sigmoid value
+    private double threshold; //............................... instance variable to hold the threshold value
+    private ArrayList< Neuron > forwardNodes; //............... list of all nodes connected forward
+    private ArrayList< Neuron > backwardNodes; //.............. list of all nodes connected backwards
+    private HashMap< String, Double > weightForNeuronNamed; //. map to give the weight from neuron name
+    private String name; //.................................... Neuron name
 
-    private static final String FORWARD = "forward"; //....... final value for key in map
-    private static final String BACKWARD = "backward"; //..... final value for key in map
+    private static final String FORWARD = "forward"; //........ final value for key in map
+    private static final String BACKWARD = "backward"; //...... final value for key in map
+    private final static String X1 = "IDX1"; //................ final value for the first input
+    private final static String X2 = "IDX2"; //................ final value for the second input
 
     // Constructor with parameters
     // requires all new Neurons to have a name and threshold value
@@ -23,8 +25,8 @@ public class Neuron implements Cloneable {
         this.setSigmoid( 0.0 ); //......... initialize all variables
         forwardNodes = new ArrayList<>();
         backwardNodes = new ArrayList<>();
-        weightDirection = new HashMap<>();
-        this.setupWeightsAndThresholds();
+        weightForNeuronNamed = new HashMap<>();
+        this.setupThreshold();
         this.name = name;
     }
 
@@ -35,10 +37,10 @@ public class Neuron implements Cloneable {
         this.setThreshold( copyMe.getThreshold() );
         forwardNodes = new ArrayList<>();
         backwardNodes = new ArrayList<>();
-        weightDirection = new HashMap<>();
+        weightForNeuronNamed = new HashMap<>();
         this.arrayListHelper( copyMe.getConnectedNodesDirection(FORWARD), forwardNodes);
         this.arrayListHelper( copyMe.getConnectedNodesDirection(BACKWARD), backwardNodes);
-        this.hashMapHelper( copyMe.getWeightDirection(), weightDirection );
+        this.hashMapHelper( copyMe.getWeightForNeuronNamed(), weightForNeuronNamed);
         this.name = copyMe.getName();
     }
 
@@ -62,7 +64,7 @@ public class Neuron implements Cloneable {
         this.threshold = threshold;
     }
 
-    public void setAConnectedWeightDirection( String direction, double value ){ weightDirection.put(direction, value); }
+    public void setAConnectedWeightDirection( String direction, double value ){ weightForNeuronNamed.put(direction, value); }
 
     public void setAConnectedNodeDirection( String direction, Neuron ... nodeList ){
         if( direction.equals(FORWARD) ) {
@@ -87,12 +89,12 @@ public class Neuron implements Cloneable {
         return ( direction.equals(FORWARD) ) ? forwardNodes : backwardNodes;
     }
 
-    public HashMap<String, Double> getWeightDirection() {
-        return weightDirection;
+    public HashMap<String, Double> getWeightForNeuronNamed() {
+        return weightForNeuronNamed;
     }
 
-    public double getWeightDirection( String direction ) {
-        return weightDirection.get( direction );
+    public double getWeightForNeuronNamed( String name ) {
+        return weightForNeuronNamed.get( name );
     }
 
     public String getName() {
@@ -100,15 +102,13 @@ public class Neuron implements Cloneable {
     }
 
     // Method to initialize all weights and thresholds
-    public void setupWeightsAndThresholds(){
+    public void setupThreshold(){
         this.setThreshold( randomNumber() );
-        weightDirection.put( FORWARD, randomNumber() );
-        weightDirection.put( BACKWARD, randomNumber() );
     }
 
     // Helper method to generate a random double
     // range is (-2.4 / 2) - (2.4/2)
-    private double randomNumber(){
+    public static double randomNumber(){
         Random randomGenerator = new Random();
         double max = 2.4/2, min = -max;
         return min + ( max - min ) * randomGenerator.nextDouble();
@@ -117,16 +117,21 @@ public class Neuron implements Cloneable {
     // Method to calculate the sigmoid value for this particular Neuron
     // requires which direction you're currently 'travelling'
     public void calculateSigmoid( String direction ){
-        double value = 0.0; //................................................................... value to use for the tally
-        String oppositeDirection = ( direction.equals(FORWARD) ) ? BACKWARD : FORWARD; //........ a string with value opposite of travel
+        double value = 0.0; //....................................................................... value to use for the tally
+        String oppositeDirection = ( direction.equals(FORWARD) ) ? BACKWARD : FORWARD; //............ a string with value opposite of travel
 
-        for( Neuron neuron : getConnectedNodesDirection(oppositeDirection) ){ //................. loop through each neuron that connects to this one
-//            System.out.println( String.format("Sig: %f%nWeight: %f%nThresh: %f%n", neuron.getSigmoid(), neuron.getWeightDirection(oppositeDirection), getThreshold()) );
-            value += ( neuron.getSigmoid() * neuron.getWeightDirection(oppositeDirection) ); //.. multiply that neurons sigmoid by its weight cost
+        for( Neuron neuron : getConnectedNodesDirection(oppositeDirection) ){ //..................... loop through each neuron that connects to this one
+            if( neuron.name.equals(X1) || neuron.name.equals(X2)) continue; //....................... if its the input nodes ignore them
+            try{
+                double weight = neuron.getWeightForNeuronNamed( neuron.getName() ); //............... if you try to get weight from a node not in the hash
+            }
+            catch( NullPointerException e ){ continue; } //.......................................... it'll just ignore it
+
+            value += ( neuron.getSigmoid() * neuron.getWeightForNeuronNamed(neuron.getName()) ); //.. multiply that neurons sigmoid by its weight cost
         }
 
-        value -= 1 * getThreshold(); //.......................................................... subtract threshold
-        setSigmoid( 1 / (1 + Math.pow( Math.E, -(value))) ); //.................................. set sigmoid value based on values obtained
+        value -= 1 * getThreshold(); //.............................................................. subtract threshold
+        setSigmoid( 1 / (1 + Math.pow( Math.E, -(value))) ); //...................................... set sigmoid value based on values obtained
     }
 
     // Overridden method used to implement cloning objects

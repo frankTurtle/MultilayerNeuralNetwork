@@ -15,26 +15,26 @@ public class App {
                                                    "ID6","ID7", "ID8",
                                                    OUTPUT,X1,X2 }; //......... final array full of neuron names
 
-
     public static void main( String[] args ){
         HashMap< String, Neuron > neuronHashMap = new HashMap<>();
         HashMap< String, Double > deltaHashMap = new HashMap<>();
-        double error = 0.0;
+        double error;
 
         setupNeuronConnections( neuronHashMap );
         computeSigmoid( neuronHashMap, FORWARD );
         error = 0 - neuronHashMap.get( OUTPUT ).getSigmoid();
         deltaHashMap.put( OUTPUT, computeDeltaForOutput(neuronHashMap.get(OUTPUT), error) );
+        computeDelta( deltaHashMap, neuronHashMap );
 
-//        neuronHashMap.get(NEURON_NAMES[0]).calculateSigmoid(FORWARD);
-//        System.out.println( neuronHashMap.get(NEURON_NAMES[0]).getSigmoid() );
+        System.out.println( deltaHashMap );
+
     }
 
     // Helper method to setup all the connections between nodes
     private static void setupNeuronConnections( HashMap< String, Neuron > neuronHashMap ){
         for( String name : NEURON_NAMES ){ //................................................ loop through each Neuron
             Neuron addMe = new Neuron( name ); //............................................ create a new one with the name
-            if( name.equals(X1) || name.equals(X2)){ //............ if its the X inputs, set sigmoids to 1
+            if( name.equals(X1) || name.equals(X2)){ //...................................... if its the X inputs, set sigmoids to 1
                 addMe.setSigmoid(1.0);
             }
             neuronHashMap.put( name, addMe ); //............................................. add it into HashMap
@@ -50,58 +50,78 @@ public class App {
         Neuron neuronX1 = neuronHashMap.get( NEURON_NAMES[7] ).clone();
         Neuron neuronX2 = neuronHashMap.get( NEURON_NAMES[8] ).clone();
 
-        for( int index = 0; index < NEURON_NAMES.length; index++ ){ //....................... loop through each Neuron
+        for( int index = 0; index < NEURON_NAMES.length; index++ ){ //................................... loop through each Neuron
             switch( index ){
-                case 0: //................................................................... Neuron 3
-                    neuron3.setAConnectedNodeDirection( FORWARD, neuron5, neuron6 ); //...... setup connecting nodes
-                    neuron3.setAConnectedNodeDirection( BACKWARD, neuronX1 );
-                    neuron3.setAConnectedNodeDirection( BACKWARD, neuronX2 );
+                case 0: //............................................................................... Neuron 3
+                    neuron3.setAConnectedNodeDirection( FORWARD, neuron5, neuron6 ); //.................. setup connecting nodes
+                    neuron3.setAConnectedNodeDirection( BACKWARD, neuronX1, neuronX2 );
 
-                    neuron5.setAConnectedNodeDirection( BACKWARD, neuron3 ); //.............. nodes its connected too also point to this one
+                    neuron3.setAConnectedWeightDirection( neuron5.getName(), Neuron.randomNumber() ); //. setup the connecting weights
+                    neuron3.setAConnectedWeightDirection( neuron6.getName(), Neuron.randomNumber() );
+
+                    neuron5.setAConnectedNodeDirection( BACKWARD, neuron3 ); //.......................... nodes its connected too also point to this one
                     neuron6.setAConnectedNodeDirection( BACKWARD, neuron3 );
                     break;
 
-                case 1: //................................................................... Neuron 4
+                case 1: //............................................................................... Neuron 4
                     neuron4.setAConnectedNodeDirection( FORWARD, neuron5, neuron6 );
-                    neuron4.setAConnectedNodeDirection( BACKWARD, neuronX1 );
-                    neuron4.setAConnectedNodeDirection( BACKWARD, neuronX2 );
+                    neuron4.setAConnectedNodeDirection( BACKWARD, neuronX1, neuronX2 );
+
+                    neuron4.setAConnectedWeightDirection( neuron5.getName(), Neuron.randomNumber() );
+                    neuron4.setAConnectedWeightDirection( neuron6.getName(), Neuron.randomNumber() );
 
                     neuron5.setAConnectedNodeDirection( BACKWARD, neuron4 );
                     neuron6.setAConnectedNodeDirection( BACKWARD, neuron4 );
                     break;
 
-                case 2: //................................................................... Neuron 5
+                case 2: //............................................................................... Neuron 5
                     neuron5.setAConnectedNodeDirection( FORWARD, neuron7, neuron8 );
+
+                    neuron5.setAConnectedWeightDirection( neuron7.getName(), Neuron.randomNumber() );
+                    neuron5.setAConnectedWeightDirection( neuron8.getName(), Neuron.randomNumber() );
 
                     neuron7.setAConnectedNodeDirection( BACKWARD, neuron5 );
                     neuron8.setAConnectedNodeDirection( BACKWARD, neuron5 );
                     break;
 
-                case 3: //................................................................... Neuron 6
+                case 3: //............................................................................... Neuron 6
                     neuron6.setAConnectedNodeDirection( FORWARD, neuron7, neuron8 );
+
+                    neuron6.setAConnectedWeightDirection( neuron7.getName(), Neuron.randomNumber() );
+                    neuron6.setAConnectedWeightDirection( neuron8.getName(), Neuron.randomNumber() );
 
                     neuron7.setAConnectedNodeDirection( BACKWARD, neuron6 );
                     neuron8.setAConnectedNodeDirection( BACKWARD, neuron6 );
                     break;
 
-                case 4: //................................................................... Neuron 7
+                case 4: //.............................................................................. Neuron 7
                     neuron7.setAConnectedNodeDirection( FORWARD, neuron9 );
+
+                    neuron7.setAConnectedWeightDirection( neuron9.getName(), Neuron.randomNumber() );
 
                     neuron9.setAConnectedNodeDirection( BACKWARD, neuron7 );
                     break;
 
-                case 5: //................................................................... Neuron 8
+                case 5: //.............................................................................. Neuron 8
                     neuron8.setAConnectedNodeDirection( FORWARD, neuron9 );
+
+                    neuron8.setAConnectedWeightDirection( neuron9.getName(), Neuron.randomNumber() );
 
                     neuron9.setAConnectedNodeDirection( BACKWARD, neuron8 );
                     break;
 
-                case 7: //................................................................... X1
+                case 7: //.............................................................................. X1
                     neuronX1.setAConnectedNodeDirection( FORWARD, neuron3, neuron4 );
+
+                    neuronX1.setAConnectedWeightDirection( neuron3.getName(), Neuron.randomNumber() );
+                    neuronX1.setAConnectedWeightDirection( neuron4.getName(), Neuron.randomNumber() );
                     break;
 
-                case 8: //................................................................... X2
+                case 8: //.............................................................................. X2
                     neuronX2.setAConnectedNodeDirection( FORWARD, neuron3, neuron4 );
+
+                    neuronX2.setAConnectedWeightDirection( neuron3.getName(), Neuron.randomNumber() );
+                    neuronX2.setAConnectedWeightDirection( neuron4.getName(), Neuron.randomNumber() );
                     break;
 
             }
@@ -113,18 +133,30 @@ public class App {
         for( String key : NEURON_NAMES ){ //........................................................... loop through each neuron name
             if( key.equals(X1) || key.equals(X2)){ continue; } //...................................... if its the input nodes ignore
             neuronHashMap.get(key).calculateSigmoid(direction); //..................................... calculate sigmoid
-//            System.out.println(  String.format( "%s %nSig:%f%n",neuronHashMap.get(key),neuronHashMap.get(key).getSigmoid()) );
         }
     }
 
     // Helper method to compute all delta values
-    private static void computeDelta( HashMap< String, Double > deltaHashMap, HashMap< String, Neuron > neuronHashMap, String direction ){
-        for( String key : NEURON_NAMES ){
-            Neuron neuron = neuronHashMap.get( key );
-            double sigmoid = neuron.getSigmoid();
-            double value = 0.0;
+    // doesnt compute the output delta, thats handled below as a special case
+    private static void computeDelta( HashMap< String, Double > deltaHashMap,
+                                      HashMap< String, Neuron > neuronHashMap){
+        double weight = 0.0; //..................................................... instance variables to hold all values used in calculation
+        double sum = 0.0;
+        double delta;
+        double value;
 
-//            value = sigmoid * ( 1 - sigmoid ) * (  )
+        for( int key = 5; key > -1; key-- ){ //..................................... loop through each value in names array
+            Neuron neuron = neuronHashMap.get( NEURON_NAMES[key] ); //.............. get each neuron and values with it
+            double sigmoid = neuron.getSigmoid();
+
+            for( String nameKey : neuron.getWeightForNeuronNamed().keySet() ){ //... loop through each neuron with a weight associated
+                delta = deltaHashMap.get( nameKey );
+                weight += neuron.getWeightForNeuronNamed( nameKey );
+                sum += delta * weight; //........................................... sum up all delta * weights
+            }
+
+            value = sigmoid * ( 1 - sigmoid ) * sum; //............................. calc with sigmoid values
+            deltaHashMap.put( neuron.getName(), value ); //......................... put it into the hash
         }
     }
 
