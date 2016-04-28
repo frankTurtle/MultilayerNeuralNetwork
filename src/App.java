@@ -27,8 +27,6 @@ public class App {
         deltaHashMap.put( OUTPUT, computeDeltaForOutput(neuronHashMap.get(OUTPUT), error) );
         computeDelta( deltaHashMap, neuronHashMap );
         computeAndUpdateWeightCorrection( neuronHashMap, deltaHashMap );
-
-
     }
 
     // Helper method to setup all the connections between nodes
@@ -179,6 +177,14 @@ public class App {
 
                 neuron.getValue().setAConnectedWeightNamed( name, (currentWeight + change) ); //........ overwrite value in the hash with updated one
             }
+
+            try { //.................................................................................... update the threshold value too
+                double delta = deltaHashMap.get(neuron.getValue().getName()); //........................ get delta and threshold based on current neuron
+                double currentThreshold =  neuron.getValue().getThreshold();
+                double change = ALPHA * -1 * delta; //.................................................. calculate the change
+                neuron.getValue().setThreshold( currentThreshold + change ); //......................... update value
+            }
+            catch (NullPointerException e){ continue; } //.............................................. here for the inputs with no threshold
         }
     }
 }
