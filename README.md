@@ -2,7 +2,7 @@
 Consider the 4-layer back-propogation network. Suppose the network performs logical XOR operation. Neurons 1 and 2 in the input layer accept inputs x1 and x2 respectively and redistribute these inputs to neurons 3 and 4 in the hidden-layer1 without any processing. Neurons 5 and 6 in the hidden-layer2. Neurons 5 and 6 process the inputs from Neurons 3 and 4 and redistrubute to neuron 7 in the output latyer. Now train this ANN network using the larning algorithm, discussed in thie class, with various input epochs 'til the mean square error is less than 0.01. Once the network has solved the problem, test your network, test your network presenting all training sets and calculating the network output. Show your output at various stages.
 
 
-# Output: Input 1 1 0
+# Output: Using Input 1 1 0
 Iteration : Error Value
 
 0: 0.280793335286586
