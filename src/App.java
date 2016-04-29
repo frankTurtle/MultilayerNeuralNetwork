@@ -1,5 +1,6 @@
 /**
  * Created by Barret J. Nobel on 4/26/2016.
+ * Requires 3 int arguments representing the 2 inputs and 1 desired output
  */
 
 import java.util.HashMap;
@@ -8,7 +9,7 @@ import java.util.Map;
 public class App {
     private final static String FORWARD = "forward"; //....................... final value for forward key in map
     private final static String BACKWARD = "backward"; //..................... final value for backward key in map
-    private final static double ALPHA = 0.1; //............................... final value for the learning
+    private final static double ALPHA = 0.01; //.............................. final value for the learning
     private final static double ERROR_LOW = -0.01;
     private final static double ERROR_HIGH = 0.01;
     private final static String X1 = "IDX1"; //............................... final value for the first input
@@ -19,28 +20,32 @@ public class App {
                                                    OUTPUT,X1,X2 }; //......... final array full of neuron names
 
     public static void main( String[] args ){
-        HashMap< String, Neuron > neuronHashMap = new HashMap<>();
+        HashMap< String, Neuron > neuronHashMap = new HashMap<>(); //.................................. variables to hold all neurons and deltas
         HashMap< String, Double > deltaHashMap = new HashMap<>();
-        double error;
+        double error; //............................................................................... holds the error
 
-        setupNeuronConnections( neuronHashMap, Double.parseDouble(args[0]), Double.parseDouble(args[1]) );
+        setupNeuronConnections( neuronHashMap,
+                Double.parseDouble(args[0]), Double.parseDouble(args[1]) ); //......................... setup all connections between neurons
 
-        int i = 0;
+        int count = 0; //.............................................................................. a counter to see how many iterations
         do{
-            computeSigmoid( neuronHashMap, FORWARD );
-            error = Double.parseDouble(args[2]) - neuronHashMap.get( OUTPUT ).getSigmoid();
+            computeSigmoid( neuronHashMap, FORWARD ); //............................................... compute all sigmoids
+            error = Double.parseDouble(args[2]) - neuronHashMap.get( OUTPUT ).getSigmoid(); //......... compute error of output
 
-            System.out.println( i + ": " + error );
+            if(count % 100000 == 0 )System.out.println( count + ": " + error ); //..................... prints out the error and iteration
 
-            deltaHashMap.put( OUTPUT, computeDeltaForOutput(neuronHashMap.get(OUTPUT), error) );
-            computeDelta( deltaHashMap, neuronHashMap );
-            computeAndUpdateWeightCorrection( neuronHashMap, deltaHashMap );
-            i++;
-        }while( Math.abs(error) > ERROR_HIGH || Math.abs(error) < ERROR_LOW );
+            deltaHashMap.put( OUTPUT, computeDeltaForOutput(neuronHashMap.get(OUTPUT), error) ); //.... put the delta of the output
+            computeDelta( deltaHashMap, neuronHashMap ); //............................................ compute deltas for the rest of the neurons
+            computeAndUpdateWeightCorrection( neuronHashMap, deltaHashMap ); //........................ calc cchange in weights and update current values
+            count++; //................................................................................ increment the counter
+        }while( Math.abs(error) > ERROR_HIGH || Math.abs(error) < ERROR_LOW ); //...................... repeat all the above while error is out of range
 
-        for( Map.Entry<String, Neuron> entry : neuronHashMap.entrySet() ){
+        System.out.println( count + ": " + error +
+                "\nActual Output: " + neuronHashMap.get(OUTPUT).getSigmoid() ); //..................... prints out the error value at the end and actual output
+
+        for( Map.Entry<String, Neuron> entry : neuronHashMap.entrySet() ){ //.......................... loop through each neuron and print out teh name and weights
             System.out.println( entry.getValue().getName() );
-            System.out.println( entry.getValue().getWeightForNeuronNamed() + "" );
+            System.out.println( entry.getValue().getWeightForNeuronNamed() + "\n" );
         }
     }
 
@@ -71,7 +76,7 @@ public class App {
                     neuron3.setAConnectedNodeDirection( FORWARD, neuron5, neuron6 ); //.................. setup connecting nodes
                     neuron3.setAConnectedNodeDirection( BACKWARD, neuronX1, neuronX2 );
 
-                    neuron3.setAConnectedWeightNamed( neuron5.getName(), Neuron.randomNumber() ); //. setup the connecting weights
+                    neuron3.setAConnectedWeightNamed( neuron5.getName(), Neuron.randomNumber() ); //..... setup the connecting weights
                     neuron3.setAConnectedWeightNamed( neuron6.getName(), Neuron.randomNumber() );
 
                     neuron5.setAConnectedNodeDirection( BACKWARD, neuron3 ); //.......................... nodes its connected too also point to this one

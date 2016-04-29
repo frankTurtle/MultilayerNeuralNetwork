@@ -89,22 +89,14 @@ public class Neuron implements Cloneable {
         return ( direction.equals(FORWARD) ) ? forwardNodes : backwardNodes;
     }
 
-    public HashMap<String, Double> getWeightForNeuronNamed() {
-        return weightForNeuronNamed;
-    }
+    public HashMap<String, Double> getWeightForNeuronNamed() { return weightForNeuronNamed; }
 
-    public double getWeightForNeuronNamed( String name ) {
-        return weightForNeuronNamed.get( name );
-    }
+    public double getWeightForNeuronNamed( String name ) { return weightForNeuronNamed.get( name ); }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
     // Method to initialize all weights and thresholds
-    public void setupThreshold(){
-        this.setThreshold( randomNumber() );
-    }
+    public void setupThreshold(){ this.setThreshold( randomNumber() ); }
 
     // Helper method to generate a random double
     // range is (-2.4 / 2) - (2.4/2)
