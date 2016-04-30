@@ -22,6 +22,8 @@ Iteration : Error Value
 Actual Output: 0.009999992621741616
 _________
 
+Weights:
+
 IDX1
 {ID4=2.178582466733447, ID3=1.938778200208061}
 
