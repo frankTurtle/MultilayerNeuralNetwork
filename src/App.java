@@ -9,7 +9,7 @@ import java.util.Map;
 public class App {
     private final static String FORWARD = "forward"; //....................... final value for forward key in map
     private final static String BACKWARD = "backward"; //..................... final value for backward key in map
-    private final static double ALPHA = 0.01; //.............................. final value for the learning
+    private final static double ALPHA = 0.001; //.............................. final value for the learning
     private final static double ERROR_LOW = -0.01;
     private final static double ERROR_HIGH = 0.01;
     private final static String X1 = "IDX1"; //............................... final value for the first input
@@ -32,7 +32,7 @@ public class App {
             computeSigmoid( neuronHashMap, FORWARD ); //............................................... compute all sigmoids
             error = Double.parseDouble(args[2]) - neuronHashMap.get( OUTPUT ).getSigmoid(); //......... compute error of output
 
-            if(count % 100000 == 0 )System.out.println( count + ": " + error ); //..................... prints out the error and iteration
+            if(count % 1000000 == 0 )System.out.println( count + ": " + error ); //..................... prints out the error and iteration
 
             deltaHashMap.put( OUTPUT, computeDeltaForOutput(neuronHashMap.get(OUTPUT), error) ); //.... put the delta of the output
             computeDelta( deltaHashMap, neuronHashMap ); //............................................ compute deltas for the rest of the neurons
