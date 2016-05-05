@@ -9,7 +9,7 @@ import java.util.Map;
 public class App {
     private final static String FORWARD = "forward"; //....................... final value for forward key in map
     private final static String BACKWARD = "backward"; //..................... final value for backward key in map
-    private final static double ALPHA = 0.001; //.............................. final value for the learning
+    private final static double ALPHA = 0.1; //.............................. final value for the learning
     private final static double ERROR_LOW = -0.01;
     private final static double ERROR_HIGH = 0.01;
     private final static String X1 = "IDX1"; //............................... final value for the first input
@@ -32,21 +32,21 @@ public class App {
             computeSigmoid( neuronHashMap, FORWARD ); //............................................... compute all sigmoids
             error = Double.parseDouble(args[2]) - neuronHashMap.get( OUTPUT ).getSigmoid(); //......... compute error of output
 
-            if(count % 1000000 == 0 )System.out.println( count + ": " + error ); //..................... prints out the error and iteration
+            if(count % 10000 == 0 ){
+                System.out.println( String.format( "Input: %s %s %s", args[0], args[1], args[2]) );
+                System.out.println( "Alpha: " + ALPHA );
+                printOutput( count, neuronHashMap );
+            }
 
             deltaHashMap.put( OUTPUT, computeDeltaForOutput(neuronHashMap.get(OUTPUT), error) ); //.... put the delta of the output
             computeDelta( deltaHashMap, neuronHashMap ); //............................................ compute deltas for the rest of the neurons
-            computeAndUpdateWeightCorrection( neuronHashMap, deltaHashMap ); //........................ calc cchange in weights and update current values
+            computeAndUpdateWeightCorrection( neuronHashMap, deltaHashMap ); //........................ calc change in weights and update current values
             count++; //................................................................................ increment the counter
         }while( Math.abs(error) > ERROR_HIGH || Math.abs(error) < ERROR_LOW ); //...................... repeat all the above while error is out of range
 
-        System.out.println( count + ": " + error +
+        System.out.println( "Final iteration: " + count + "\nError: " + error +
                 "\nActual Output: " + neuronHashMap.get(OUTPUT).getSigmoid() ); //..................... prints out the error value at the end and actual output
 
-        for( Map.Entry<String, Neuron> entry : neuronHashMap.entrySet() ){ //.......................... loop through each neuron and print out teh name and weights
-            System.out.println( entry.getValue().getName() );
-            System.out.println( entry.getValue().getWeightForNeuronNamed() + "\n" );
-        }
     }
 
     // Helper method to setup all the connections between nodes
@@ -207,5 +207,13 @@ public class App {
             }
             catch (NullPointerException e){ continue; } //.............................................. here for the inputs with no threshold
         }
+    }
+
+    private static void printOutput( int count, HashMap< String, Neuron > neuronHashMap ){
+        for( Map.Entry<String, Neuron> entry : neuronHashMap.entrySet() ){ //.......................... loop through each neuron and print out teh name and weights
+            System.out.print( "Weights at " + count + " ");
+            System.out.println( entry.getValue().getWeightForNeuronNamed() );
+        }
+        System.out.println( "\n________________\n" );
     }
 }
