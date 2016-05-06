@@ -22,27 +22,35 @@ public class App {
     public static void main( String[] args ){
         HashMap< String, Neuron > neuronHashMap = new HashMap<>(); //.................................. variables to hold all neurons and deltas
         HashMap< String, Double > deltaHashMap = new HashMap<>();
-        double error; //............................................................................... holds the error
-
-        setupNeuronConnections( neuronHashMap,
-                Double.parseDouble(args[0]), Double.parseDouble(args[1]) ); //......................... setup all connections between neurons
-
+        double error = 0.0; //......................................................................... holds the error
         int count = 0; //.............................................................................. a counter to see how many iterations
+        int[] x1Values = { 0, 0, 1, 1 }; //............................................................. inputs and outputs
+        int[] x2Values = { 0, 1, 0, 1 };
+        int[] outputs = { 0, 1, 1, 0 };
+
+        setupNeuronConnections( neuronHashMap );
+
         do{
-            computeSigmoid( neuronHashMap, FORWARD ); //............................................... compute all sigmoids
-            error = Double.parseDouble(args[2]) - neuronHashMap.get( OUTPUT ).getSigmoid(); //......... compute error of output
 
-            if(count % 10000 == 0 ){
-                System.out.println( String.format( "Input: %s %s %s", args[0], args[1], args[2]) );
-                System.out.println( "Alpha: " + ALPHA );
-                printOutput( count, neuronHashMap );
+            for( int i = 0; i < 4; i++ ){
+                neuronHashMap.get(X1).setSigmoid( x1Values[i] );
+                neuronHashMap.get(X2).setSigmoid( x1Values[i] );
+                computeSigmoid( neuronHashMap, FORWARD ); //............................................... compute all sigmoids
+                error = outputs[i] - neuronHashMap.get( OUTPUT ).getSigmoid(); //.......................... compute error of output
+
+                if( count % 100 == 0 ){
+                    System.out.println( String.format("Input: %s %s %s", outputs[i], x1Values[i], x2Values[i]) );
+                    System.out.println( "Alpha: " + ALPHA );
+                    printOutput( count, neuronHashMap );
+                }
+
+                deltaHashMap.put( OUTPUT, computeDeltaForOutput(neuronHashMap.get(OUTPUT), error) ); //.... put the delta of the output
+                computeDelta( deltaHashMap, neuronHashMap ); //............................................ compute deltas for the rest of the neurons
+                computeAndUpdateWeightCorrection( neuronHashMap, deltaHashMap ); //........................ calc change in weights and update current values
             }
-
-            deltaHashMap.put( OUTPUT, computeDeltaForOutput(neuronHashMap.get(OUTPUT), error) ); //.... put the delta of the output
-            computeDelta( deltaHashMap, neuronHashMap ); //............................................ compute deltas for the rest of the neurons
-            computeAndUpdateWeightCorrection( neuronHashMap, deltaHashMap ); //........................ calc change in weights and update current values
             count++; //................................................................................ increment the counter
-        }while( Math.abs(error) > ERROR_HIGH || Math.abs(error) < ERROR_LOW ); //...................... repeat all the above while error is out of range
+
+        }while( Math.abs(error) > ERROR_HIGH ); //...................... repeat all the above while error is out of range
 
         System.out.println( "Final iteration: " + count + "\nError: " + error +
                 "\nActual Output: " + neuronHashMap.get(OUTPUT).getSigmoid() ); //..................... prints out the error value at the end and actual output
@@ -50,13 +58,12 @@ public class App {
     }
 
     // Helper method to setup all the connections between nodes
-    private static void setupNeuronConnections( HashMap< String, Neuron > neuronHashMap,
-                                                double xInput1, double xInput2 ){
+    private static void setupNeuronConnections( HashMap< String, Neuron > neuronHashMap){
         for( String name : NEURON_NAMES ){ //................................................ loop through each Neuron
             Neuron addMe = new Neuron( name ); //............................................ create a new one with the name
 
-            if( name.equals(X1) ) addMe.setSigmoid( xInput1 ); //............................ if its the X inputs, set sigmoids to passed in value
-            if( name.equals(X2) ) addMe.setSigmoid( xInput2 );
+//            if( name.equals(X1) ) addMe.setSigmoid( xInput1 ); //............................ if its the X inputs, set sigmoids to passed in value
+//            if( name.equals(X2) ) addMe.setSigmoid( xInput2 );
             neuronHashMap.put( name, addMe ); //............................................. add it into HashMap
         }
 
@@ -152,7 +159,7 @@ public class App {
     private static void computeSigmoid( HashMap< String, Neuron > neuronHashMap, String direction ){
         for( String key : NEURON_NAMES ){ //........................................................... loop through each neuron name
             if( key.equals(X1) || key.equals(X2)){ continue; } //...................................... if its the input nodes ignore
-            neuronHashMap.get( key ).calculateSigmoid( direction ); //................................. calculate sigmoid
+            neuronHashMap.get( key ).calculateSigmoid( direction, key ); //................................. calculate sigmoid
         }
     }
 
@@ -213,6 +220,10 @@ public class App {
         for( Map.Entry<String, Neuron> entry : neuronHashMap.entrySet() ){ //.......................... loop through each neuron and print out teh name and weights
             System.out.print( "Weights at " + count + " ");
             System.out.println( entry.getValue().getWeightForNeuronNamed() );
+
+            if( entry.getValue().getName().equals(X1) || entry.getValue().getName().equals(X2) ) continue;
+            System.out.print( "Threshold for " + entry.getValue().getName() + " ");
+            System.out.println( entry.getValue().getThreshold() );
         }
         System.out.println( "\n________________\n" );
     }

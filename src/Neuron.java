@@ -108,22 +108,23 @@ public class Neuron implements Cloneable {
 
     // Method to calculate the sigmoid value for this particular Neuron
     // requires which direction you're currently 'travelling'
-    public void calculateSigmoid( String direction ){
+    public void calculateSigmoid( String direction, String neuronNamed ){
         double value = 0.0; //....................................................................... value to use for the tally
         String oppositeDirection = ( direction.equals(FORWARD) ) ? BACKWARD : FORWARD; //............ a string with value opposite of travel
 
         for( Neuron neuron : getConnectedNodesDirection(oppositeDirection) ){ //..................... loop through each neuron that connects to this one
-            if( neuron.name.equals(X1) || neuron.name.equals(X2)) continue; //....................... if its the input nodes ignore them
-            double weight;
+            if( neuron.name.equals(X1) || neuron.name.equals(X2) ) continue; //....................... if its the input nodes ignore them
+            double weight = 0.0;
             try{
-                weight = neuron.getWeightForNeuronNamed( neuron.getName() ); //...................... if you try to get weight from a node not in the hash
+                weight = neuron.getWeightForNeuronNamed( neuronNamed ); //...................... if you try to get weight from a node not in the hash
             }
-            catch( NullPointerException e ){ continue; } //.......................................... it'll just ignore it
+            catch( NullPointerException e ){ System.out.println( e ); } //.......................................... it'll just ignore it
 
             value += ( neuron.getSigmoid() * weight ); //............................................ multiply that neurons sigmoid by its weight cost
         }
 
-        value -= 1 * getThreshold(); //.............................................................. subtract threshold
+        value = 1 * getThreshold(); //.............................................................. subtract threshold
+
         setSigmoid( 1 / (1 + Math.pow( Math.E, -(value))) ); //...................................... set sigmoid value based on values obtained
     }
 
